@@ -11,4 +11,15 @@ describe 'Creating posts' do
 
     expect(page).to have_content('First post')
   end
+
+  it 'displays an error when the post has no title' do
+    visit '/'
+    click_link 'New Post'
+    expect(page).to have_content('New Post')
+
+    fill_in 'Title', with: ''
+    click_button 'Create Post'
+
+    expect(page).to have_content('error')
+  end
 end
