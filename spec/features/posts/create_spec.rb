@@ -1,85 +1,57 @@
 require 'rails_helper'
 
 describe 'Creating posts' do
-  it 'redirects to the post index page on success' do
+  def create_post_item(options={})
+    options[:title] ||= 'First post'
+    options[:body] ||= 'Body of the first post'
+
     visit '/'
     click_link 'New Post'
     expect(page).to have_content('New Post')
 
-    fill_in 'Title', with: 'First post'
-    fill_in 'Body', with: 'Body of the first post'
+    fill_in 'Title', with: options[:title]
+    fill_in 'Body', with: options[:body]
     click_button 'Create Post'
+  end
+
+  it 'redirects to the post index page on success' do
+    create_post_item
 
     expect(page).to have_content('First post')
   end
 
   it 'displays an error when the post has no title' do
-    visit '/'
-    click_link 'New Post'
-    expect(page).to have_content('New Post')
-
-    fill_in 'Title', with: ''
-    click_button 'Create Post'
+    create_post_item title: ''
 
     expect(page).to have_content('error')
   end
 
   it 'displays an error when the post has no body' do
-    visit '/'
-    click_link 'New Post'
-    expect(page).to have_content('New Post')
-
-    fill_in 'Title', with: 'First post'
-    fill_in 'Body', with: ''
-    click_button 'Create Post'
+    create_post_item body: ''
 
     expect(page).to have_content('error')
   end
 
   it 'displays an error when the post has a title with length less than 5
 characters' do
-    visit '/'
-    click_link 'New Post'
-    expect(page).to have_content('New Post')
-
-    fill_in 'Title', with: 'A' * 4
-    fill_in 'Body', with: 'Body of the first post'
-    click_button 'Create Post'
+    create_post_item title: 'A' * 4
 
     expect(page).to have_content('error')
   end
 
   it 'displays an error when the post has a title with length more than 100
 characters' do
-    visit '/'
-    click_link 'New Post'
-    expect(page).to have_content('New Post')
-
-    fill_in 'Title', with: 'A' * 101
-    fill_in 'Body', with: 'Body of the first post'
-    click_button 'Create Post'
+    create_post_item title: 'A' * 101
 
     expect(page).to have_content('error')
   end
 
   it 'displays an error when the post has the same title as existing post' do
-    visit '/'
-    click_link 'New Post'
-    expect(page).to have_content('New Post')
-
-    fill_in 'Title', with: 'First post'
-    fill_in 'Body', with: 'Body of the first post'
-    click_button 'Create Post'
+    create_post_item
 
     expect(page).to have_content('First post')
 
-    visit '/'
-    click_link 'New Post'
-    expect(page).to have_content('New Post')
-
-    fill_in 'Title', with: 'First post'
-    fill_in 'Body', with: 'Body of the first post'
-    click_button 'Create Post'
+    create_post_item
 
     expect(page).to have_content('error')
   end
