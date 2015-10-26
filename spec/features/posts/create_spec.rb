@@ -35,4 +35,30 @@ describe 'Creating posts' do
 
     expect(page).to have_content('error')
   end
+
+  it 'displays an error when the post has a title with length less than 5
+characters' do
+    visit '/'
+    click_link 'New Post'
+    expect(page).to have_content('New Post')
+
+    fill_in 'Title', with: 'A' * 4
+    fill_in 'Body', with: 'Body of the first post'
+    click_button 'Create Post'
+
+    expect(page).to have_content('error')
+  end
+
+  it 'displays an error when the post has a title with length more than 100
+characters' do
+    visit '/'
+    click_link 'New Post'
+    expect(page).to have_content('New Post')
+
+    fill_in 'Title', with: 'A' * 101
+    fill_in 'Body', with: 'Body of the first post'
+    click_button 'Create Post'
+
+    expect(page).to have_content('error')
+  end
 end
