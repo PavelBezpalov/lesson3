@@ -61,4 +61,26 @@ characters' do
 
     expect(page).to have_content('error')
   end
+
+  it 'displays an error when the post has the same title as existing post' do
+    visit '/'
+    click_link 'New Post'
+    expect(page).to have_content('New Post')
+
+    fill_in 'Title', with: 'First post'
+    fill_in 'Body', with: 'Body of the first post'
+    click_button 'Create Post'
+
+    expect(page).to have_content('First post')
+
+    visit '/'
+    click_link 'New Post'
+    expect(page).to have_content('New Post')
+
+    fill_in 'Title', with: 'First post'
+    fill_in 'Body', with: 'Body of the first post'
+    click_button 'Create Post'
+
+    expect(page).to have_content('error')
+  end
 end
